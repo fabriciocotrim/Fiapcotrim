@@ -1,0 +1,26 @@
+{
+  "name": "Vestibulares 2026/2 — Cronograma",
+  "short_name": "Vest 2026/2",
+  "description": "Cronograma diário FGV (14/jun) + FIAP (01/ago, hedge)",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
