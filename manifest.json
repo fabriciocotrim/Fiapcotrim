@@ -1,9 +1,11 @@
 {
-  "name": "FGV 2026/3 — Cronograma",
-  "short_name": "FGV 2026/3",
-  "description": "Cronograma vestibular FGV IDT — ADS — 3º trimestre 2026",
-  "start_url": "index.html",
+  "name": "Vestibulares 2026/2 — Cronograma",
+  "short_name": "Vest 2026/2",
+  "description": "Cronograma diário FGV (14/jun) + FIAP (01/ago, hedge)",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
   "lang": "pt-BR",
@@ -11,7 +13,8 @@
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
