@@ -4,7 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1a1a1a">
-<title>FIAP 2026/2 — Cronograma</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vest 2026/2">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Vestibulares 2026/2 — Cronograma</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,6 +40,9 @@
     --phase-calibracao: #a16207;
     --phase-viagem: #0d9488;
     --phase-prova: #000000;
+    --phase-inscricao: #be185d;
+    --phase-matricula: #0891b2;
+    --phase-fgv: #1f4e79;
 
     --radius-sm: 8px;
     --radius: 12px;
@@ -60,6 +71,9 @@
     --phase-calibracao: #d4a017;
     --phase-viagem: #2dd4bf;
     --phase-prova: #f5f5f5;
+    --phase-inscricao: #ec4899;
+    --phase-matricula: #22d3ee;
+    --phase-fgv: #60a5fa;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
@@ -149,6 +163,97 @@
     font-family: 'JetBrains Mono', monospace;
     color: var(--accent);
     font-weight: 500;
+  }
+
+  /* Path banner — qual caminho está ativo */
+  .path-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  .path-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #fff;
+    background: var(--phase-fgv);
+    font-weight: 600;
+  }
+  .path-tag.fiap { background: var(--accent); }
+  .path-tag.aguardando { background: var(--phase-calibracao); }
+  .path-tag.matricula { background: var(--phase-matricula); }
+  .path-info {
+    color: var(--text-soft);
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  /* Bifurcação — botões aprovado/reprovado */
+  .bifurcation {
+    background: var(--bg-elev);
+    border: 1px solid var(--accent);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .bifurcation[hidden] { display: none; }
+  .bifurcation-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .bifurcation-sub {
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-bottom: 10px;
+  }
+  .bifurcation-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .bif-btn {
+    flex: 1;
+    min-width: 130px;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+  }
+  .bif-btn.approve:hover { border-color: var(--phase-matricula); color: var(--phase-matricula); }
+  .bif-btn.reject:hover { border-color: var(--accent); color: var(--accent); }
+  .bif-btn.reset {
+    flex: 0 0 auto;
+    min-width: 0;
+    color: var(--text-mute);
+    border-color: var(--border-soft);
+    background: transparent;
+  }
+  .bif-btn.reset:hover { color: var(--text-soft); border-color: var(--text-mute); }
+  .bif-status {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-soft);
+    line-height: 1.4;
   }
 
   /* Progress bar */
@@ -261,6 +366,9 @@
     border-color: var(--accent);
     box-shadow: var(--shadow);
   }
+  .week.is-dimmed {
+    opacity: 0.55;
+  }
   .week-header {
     padding: 14px 16px;
     display: flex;
@@ -301,6 +409,21 @@
     letter-spacing: 0.02em;
     text-transform: uppercase;
   }
+  .week-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+    color: #fff;
+    font-weight: 600;
+  }
+  .week-tag.fgv { background: var(--phase-fgv); }
+  .week-tag.fiap { background: var(--accent); }
+  .week-tag.both { background: var(--text-soft); }
   .week-progress {
     display: flex;
     align-items: center;
@@ -613,16 +736,21 @@
 
 <header>
   <div class="brand">
-    <div class="brand-name">FIAP <em>2026/2</em> · Cronograma</div>
+    <div class="brand-name">FGV + FIAP <em>2026/2</em> · Cronograma</div>
     <div class="brand-meta" id="todayDate"></div>
   </div>
 
   <div class="countdown">
     <div class="countdown-num" id="countdownNum">—</div>
-    <div class="countdown-label">
+    <div class="countdown-label" id="countdownLabel">
       dias restantes
-      <strong>até <span class="exam-date">sáb 01.ago</span></strong>
+      <strong>até <span class="exam-date" id="countdownTarget">—</span></strong>
     </div>
+  </div>
+
+  <div class="path-banner" id="pathBanner">
+    <span class="path-tag" id="pathTag">FGV</span>
+    <span class="path-info" id="pathInfo">Caminho primário ativo</span>
   </div>
 
   <div class="progress">
@@ -635,6 +763,16 @@
     </div>
   </div>
 </header>
+
+<div class="bifurcation" id="bifurcation" hidden>
+  <div class="bifurcation-title" id="bifTitle">Resultado FGV</div>
+  <div class="bifurcation-sub" id="bifSub">Divulgação após 18h em 22/06.</div>
+  <div class="bifurcation-actions" id="bifActions">
+    <button class="bif-btn approve" id="bifApprove">✓ Aprovado · matrícula</button>
+    <button class="bif-btn reject" id="bifReject">✗ Reprovado · seguir FIAP</button>
+  </div>
+  <div class="bif-status" id="bifStatus"></div>
+</div>
 
 <div class="today-card" id="todayCard" hidden>
   <div class="today-label">hoje · <span id="todayDayName"></span></div>
@@ -652,11 +790,11 @@
 <div id="weekList"></div>
 
 <footer>
-  <div>FIAP 2026/2 · prova 01.ago.2026 · 10h–13h · Teams</div>
+  <div>FGV: dom 14.jun · 9h30–11h30 · online</div>
+  <div>FIAP: sáb 01.ago · 10h–13h · Teams (hedge)</div>
   <div style="margin-top:6px;">
     <button class="reset-link" id="resetBtn">limpar marcações</button>
   </div>
-  <div style="margin-top:8px;font-size:11px;opacity:0.45;">v14.mai.2026</div>
 </footer>
 
 </div>
@@ -678,9 +816,21 @@
 </div>
 
 <script>
-// ========== DATA ==========
-const EXAM_DATE = new Date(2026, 7, 1); // 01/08/2026
-const STORAGE_KEY = 'fiap-cronograma-v1';
+// ========== DATAS-CHAVE ==========
+const DATES = {
+  fgvInscricaoDeadline: new Date(2026, 4, 25),   // 25/05 seg
+  fgvCheckin:           new Date(2026, 5, 7),    // 07/06 dom
+  fgvProva:             new Date(2026, 5, 14),   // 14/06 dom
+  fgvResultado:         new Date(2026, 5, 22),   // 22/06 seg
+  fgvMatriculaFim:      new Date(2026, 6, 13),   // 13/07 seg
+  fgvAssinatura:        new Date(2026, 6, 15),   // 15/07 qua
+  fgvCancelamento:      new Date(2026, 6, 27),   // 27/07 seg
+  fgvAulas:             new Date(2026, 6, 28),   // 28/07 ter
+  fiapInscricaoDeadline:new Date(2026, 5, 30),   // 30/06 ter
+  fiapProva:            new Date(2026, 7, 1)     // 01/08 sáb
+};
+
+const STORAGE_KEY = 'vest-cronograma-v2';
 
 const PHASES = {
   diagnostico: { label: 'Diagnóstico', color: 'var(--phase-diagnostico)' },
@@ -691,11 +841,12 @@ const PHASES = {
   simulado:    { label: 'Simulado',    color: 'var(--phase-simulado)' },
   calibracao:  { label: 'Calibração',  color: 'var(--phase-calibracao)' },
   viagem:      { label: 'Viagem',      color: 'var(--phase-viagem)' },
-  prova:       { label: 'Prova',       color: 'var(--phase-prova)' }
+  prova:       { label: 'Prova',       color: 'var(--phase-prova)' },
+  inscricao:   { label: 'Inscrição',   color: 'var(--phase-inscricao)' },
+  matricula:   { label: 'Matrícula',   color: 'var(--phase-matricula)' },
+  fgv:         { label: 'FGV',         color: 'var(--phase-fgv)' }
 };
 
-// Mapeamento de fontes de estudo → URLs.
-// Ordem importa: nomes mais longos serão linkados antes (regex ordenado).
 const SOURCES = {
   'Marcos Aba':            'https://www.youtube.com/@marcosaba360',
   'Equaciona':             'https://www.youtube.com/@equacionacompaulopereira',
@@ -705,11 +856,15 @@ const SOURCES = {
   'Brasil Escola':         'https://brasilescola.uol.com.br/redacao',
   'Imaginie':              'https://www.youtube.com/@Imaginie',
   'Débora Aladim':         'https://www.youtube.com/@deboraaladim',
+  'Aladim':                'https://www.youtube.com/@deboraaladim',
   'Curso Enem Gratuito':   'https://www.youtube.com/@CursoEnemGratuito',
   'QConcursos':            'https://www.qconcursos.com',
   'Folha':                 'https://www.folha.uol.com.br',
   'Valor':                 'https://valor.globo.com',
   'YouTube':               'https://www.youtube.com',
+  'graduacao-online.fgv.br': 'https://graduacao-online.fgv.br/',
+  'FGV':                   'https://graduacao-online.fgv.br/',
+  'candidatograduacao@fgv.br': 'mailto:candidatograduacao@fgv.br',
   'fiap.com.br/graduacao/vestibular': 'https://www.fiap.com.br/graduacao/vestibular',
   'fiap.com.br':           'https://www.fiap.com.br/graduacao/vestibular'
 };
@@ -724,9 +879,7 @@ function linkifyText(text) {
   if (!text || text === '—') return escapeHtml(text || '');
   const sorted = Object.keys(SOURCES).sort((a, b) => b.length - a.length);
   const escaped = sorted.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  // \b não funciona bem com 'fiap.com.br' (ponto), então usamos lookbehind/lookahead
   const re = new RegExp(`(?<![\\w@.-])(${escaped.join('|')})(?![\\w@.-])`, 'g');
-  // Escape primeiro, depois aplica os links (os matches usam o texto original já escapado)
   const safe = escapeHtml(text);
   return safe.replace(re, (m) => {
     const url = SOURCES[m];
@@ -734,23 +887,23 @@ function linkifyText(text) {
   });
 }
 
-// W4 atualizada para a estrutura nova de 6 atividades.
-// W1, W2, W3 e W4-Ativ1 marcados como concluídos por padrão.
+// ========== DATA ==========
+// track: 'both' = vale para FGV e FIAP; 'fgv' = só FGV; 'fiap' = só FIAP (condicional)
 const DATA = [
-  { week: 'W1', period: '22-26/abr', focus: 'Diagnóstico inicial', days: [
+  { week: 'W1', period: '22-26/abr', focus: 'Diagnóstico inicial', track:'both', days: [
     { id:'w1-d1', day:'Sem', date:'22-26/abr', iso:'2026-04-26', phase:'diagnostico',
       task:'Diagnóstico executado (9/9 com tempo)', recursos:'—',
       exercicios:'PDF Diagnostico_FIAP', milestone:'Análise entregue',
       obs:'Lição: 6+ min por questão na prova real', defaultDone:true }
   ]},
-  { week: 'W2', period: '27/abr–3/mai', focus: 'Redação ENEM (formato)', days: [
+  { week: 'W2', period: '27/abr–3/mai', focus: 'Redação ENEM (formato)', track:'both', days: [
     { id:'w2-d1', day:'Sem', date:'27/abr–3/mai', iso:'2026-05-03', phase:'redacao',
       task:'Estudar formato ENEM + micro-redação manuscrita',
       recursos:'Brasil Escola; YouTube redações 1000',
       exercicios:'Micro_Redacao_W2.docx', milestone:'Micro-redação corrigida',
       obs:'Trabalho de transferência rascunho→texto identificado', defaultDone:true }
   ]},
-  { week: 'W3', period: '4-10/mai', focus: '% cascata + Regra de 3', days: [
+  { week: 'W3', period: '4-10/mai', focus: '% cascata + Regra de 3', track:'fiap', days: [
     { id:'w3-d1', day:'Seg', date:'4/mai', iso:'2026-05-04', phase:'matematica',
       task:'Porcentagem em Cascata — base',
       recursos:"Marcos Aba: 'Porcentagem em problema' (8 min)",
@@ -777,8 +930,7 @@ const DATA = [
       exercicios:'Caderno W3: Q5.1 e Q5.2', milestone:'16/16 acertos',
       obs:'Auto-avaliação ao final: 10/10 acertos? tempo médio?', defaultDone:true }
   ]},
-  // W4 ATUALIZADA — estrutura de 6 atividades / 6 dias
-  { week: 'W4', period: '8-15/mai', focus: 'Redação #1 (ciclo 6 atividades)', days: [
+  { week: 'W4', period: '8-15/mai', focus: 'Redação #1 (ciclo 6 atividades)', track:'both', days: [
     { id:'w4-d1', day:'Sex', date:'8/mai', iso:'2026-05-08', phase:'redacao',
       task:'Ativ 1 · Redação #1A — diagnóstico (30 linhas, manuscrita, sem aula prévia)',
       recursos:'—',
@@ -786,11 +938,11 @@ const DATA = [
       milestone:'Score estimado ~715/1000 (baseline W1: ~580)',
       obs:'C1:140 | C2:160 | C3:110 | C4:150 | C5:155. Tema: combate à desinformação.', defaultDone:true },
     { id:'w4-d2', day:'Seg', date:'11/mai', iso:'2026-05-11', phase:'redacao',
-      task:'Ativ 2 · Vídeos modelo nota 1000',
-      recursos:'Débora Aladim · Imaginie · Curso Enem Gratuito',
+      task:'Ativ 2 · Vídeos modelo nota 1000 (foco C5)',
+      recursos:'Aladim · Curso Enem Gratuito',
       exercicios:'Anotar como os 5 elementos da C5 aparecem',
       milestone:'Vídeos assistidos com filtro crítico',
-      obs:'Foco em proposta de intervenção (gargalo principal — C5)' },
+      obs:'Proposta de intervenção (gargalo principal — C5). Sequência: Aladim espelho → Curso Enem C5 → Curso Enem nota mil → Aladim revisão.' },
     { id:'w4-d3', day:'Ter', date:'12/mai', iso:'2026-05-12', phase:'redacao',
       task:'Ativ 3 · Estudo das 5 competências',
       recursos:'Caderno W4 — Parte B',
@@ -816,326 +968,373 @@ const DATA = [
       milestone:'Redações enviadas',
       obs:'Alvo C5 > 150/200' }
   ]},
-  { week: 'W5', period: '18-24/mai', focus: 'Redação FGV #2 (primário) + Gráficos/Equações (manutenção)', days: [
-    { id:'w5-d1', day:'Seg', date:'18/mai', iso:'2026-05-18', phase:'redacao',
-      task:'INSCRIÇÃO FGV (deadline 25/mai, taxa R$120) + revisão banco de repertório',
-      recursos:'Portal FGV graduação online',
-      exercicios:'Inscrição concluída + comprovante salvo',
-      milestone:'Inscrição confirmada por e-mail',
-      obs:'Sem inscrição, resto da semana é inútil. Fazer primeiro.' },
+  // ============================================================
+  // BLOCO REBALANCEADO PARA FGV (W5–W8): peso alto em REDAÇÃO
+  // FGV é só redação (520-730 palavras, 5 competências, 0-1000).
+  // Matemática/lógica = manutenção mínima, só para hedge FIAP.
+  // ============================================================
+  { week: 'W5', period: '18-24/mai', focus: 'INSCRIÇÃO FGV + Redação #2', track:'both', days: [
+    { id:'w5-d1', day:'Seg', date:'18/mai', iso:'2026-05-18', phase:'inscricao',
+      task:'INSCRIÇÃO FGV — abrir e concluir (DEADLINE 25/05)',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'R$120 boleto/cartão · Polo RJ · ADS · Vestibular Online',
+      milestone:'Inscrição CONFIRMADA · CCI recebido',
+      obs:'CRÍTICO. Verificar antes: Win10/11, webcam ≥640x480, internet ≥10 Mbps down / 5 up, RG/CNH físico.' },
     { id:'w5-d2', day:'Ter', date:'19/mai', iso:'2026-05-19', phase:'redacao',
-      task:'Repertório FGV: montar lista de 3-5 referências com dado/data/autor',
-      recursos:'DSA (UE 2022, 6%); Reuters Institute 2023; Marco Civil Lei 12.965/2014; CF/88 Art.220; TSE 2022/2024',
-      exercicios:'Tabela de repertório preenchida (# | referência | dado | ano | parágrafo)',
-      milestone:'3 referências prontas com dado específico — nenhuma genérica',
-      obs:'Repertório sem dado concreto (ex: filósofo sem data/fonte) não conta para C3' },
+      task:'Redação #2 — tema + repertório específico (foco C3)',
+      recursos:'Folha; Valor',
+      exercicios:'3-5 referências com dado/data/autor (não genéricas)',
+      milestone:'Lista de repertório FGV pronta',
+      obs:'C3 gargalo: usar dados específicos. DSA, Reuters 2023, Marco Civil, CF/88 Art.220.' },
     { id:'w5-d3', day:'Qua', date:'20/mai', iso:'2026-05-20', phase:'redacao',
-      task:'Redação FGV #2 — escrita 2h cronometradas (520-730 palavras, papel físico)',
-      recursos:'Caderno W5 — Folha de Redação #2',
-      exercicios:'Redação completa dentro da faixa de palavras',
-      milestone:'520-730 palavras. Fora da faixa = ZERO no edital FGV.',
-      obs:'Esboçar C5 (5 elementos) e repertório por parágrafo ANTES de começar o cronômetro' },
+      task:'Redação #2 — escrita 2h cronometradas (formato FGV: 520-730 palavras)',
+      recursos:'—',
+      exercicios:'Papel + cronômetro',
+      milestone:'Redação #2 escrita dentro de 520-730 palavras',
+      obs:'CONTAGEM RÍGIDA: fora da faixa = nota ZERO no edital FGV. Treinar contagem.' },
     { id:'w5-d4', day:'Qui', date:'21/mai', iso:'2026-05-21', phase:'redacao',
       task:'Auto-análise Redação #2 + envio para correção',
-      recursos:'Checklist C3/C5 do Caderno W5',
-      exercicios:'Auto-análise por competência preenchida',
-      milestone:'C5 com 5 elementos identificados; C3 sem repertório genérico',
-      obs:'Checar: (1) períodos longos? (2) cada parágrafo tem função única? (3) proposta tem órgão fiscalizador nomeado e sem prazo arbitrário?' },
+      recursos:'Caderno W4 Parte C',
+      exercicios:'Foco em C3 e C5',
+      milestone:'Redação enviada',
+      obs:'C5 alvo > 160/200' },
     { id:'w5-d5', day:'Sex', date:'22/mai', iso:'2026-05-22', phase:'matematica',
       task:'Manutenção FIAP: gráficos + equações 1º grau (1h, baixa prioridade)',
-      recursos:"Equaciona / Marcos Aba: 'Leitura de gráficos'; Gis com Giz: 'Equação 1º grau'",
-      exercicios:'10 questões mistas (gráficos + equações)',
-      milestone:'≥80% de acerto',
-      obs:'Identificar tópico mais frágil para W10' }
+      recursos:"Equaciona; Marcos Aba",
+      exercicios:'5 questões mistas',
+      milestone:'Manutenção concluída',
+      obs:'Conteúdo NÃO cai na FGV. Hedge só se reprovado em 22/06.' }
   ]},
-  { week: 'W6', period: '25-31/mai', focus: 'Lógica (PRIORITÁRIO — Ferretto)', days: [
-    { id:'w6-d1', day:'Seg', date:'25/mai', iso:'2026-05-25', phase:'logica',
-      task:'Proposições e conectivos lógicos (E, OU, SE-ENTÃO, NÃO)',
-      recursos:"Ferretto: 'Proposições lógicas - introdução' (~15 min)",
-      exercicios:'5 questões de identificação de conectivos',
-      milestone:'Reconhecer conectivos sem hesitar',
-      obs:'Base teórica que faltou no diagnóstico' },
-    { id:'w6-d2', day:'Ter', date:'26/mai', iso:'2026-05-26', phase:'logica',
-      task:'Tabela-verdade — construção e interpretação',
-      recursos:"Ferretto: 'Tabela-verdade' (~20 min)",
-      exercicios:'5 questões de tabela-verdade',
-      milestone:'Construir tabela-verdade',
-      obs:'Ferramenta universal para qualquer questão' },
-    { id:'w6-d3', day:'Qua', date:'27/mai', iso:'2026-05-27', phase:'logica',
-      task:'Equivalências: inversa, recíproca, CONTRAPOSITIVA',
-      recursos:"Ferretto: 'Equivalências lógicas' (~15 min)",
-      exercicios:'10 questões de equivalência',
-      milestone:'Identificar contrapositiva direto',
-      obs:'LOG2 do diagnóstico falhou aqui. CRÍTICO.' },
-    { id:'w6-d4', day:'Qui', date:'28/mai', iso:'2026-05-28', phase:'logica',
-      task:'Negação de proposições compostas (Leis de De Morgan)',
-      recursos:"Ferretto: 'Negação de proposições' (~15 min)",
-      exercicios:'10 questões de negação',
-      milestone:'Negar proposição composta',
-      obs:'Pegadinha clássica em concursos' },
-    { id:'w6-d5', day:'Sex', date:'29/mai', iso:'2026-05-29', phase:'logica',
-      task:'Mini-simulado de lógica proposicional',
+  { week: 'W6', period: '25-31/mai', focus: 'Redação #3 (formato FGV)', track:'both', days: [
+    { id:'w6-d1', day:'Seg', date:'25/mai', iso:'2026-05-25', phase:'redacao',
+      task:'Redação #3 — tema + repertório (foco C5: 5 elementos)',
+      recursos:'Aladim; Imaginie; Curso Enem Gratuito',
+      exercicios:'Esboço dos 5 elementos C5: Agente → Ação → Modo → Finalidade → Detalhamento',
+      milestone:'Esboço estruturado pronto',
+      obs:'Nunca voz passiva. Agente específico (MEC, ANATEL, Congresso — não "governo").' },
+    { id:'w6-d2', day:'Ter', date:'26/mai', iso:'2026-05-26', phase:'redacao',
+      task:'Redação #3 — escrita 2h cronometradas (formato FGV)',
       recursos:'—',
-      exercicios:'20 questões cronometradas (60 min)',
-      milestone:'20 questões ≥80%',
-      obs:'Se errar mais de 4, voltar ao Ferretto antes da W7' }
-  ]},
-  { week: 'W7', period: '1-7/jun', focus: 'Lógica + Redação #3', days: [
-    { id:'w7-d1', day:'Seg', date:'1/jun', iso:'2026-06-01', phase:'logica',
-      task:'Conjuntos: diagramas de Venn',
-      recursos:"Ferretto: 'Conjuntos e diagramas de Venn' (~15 min)",
-      exercicios:'5 questões de Venn',
-      milestone:'Resolver Venn de 2-3 conj.',
-      obs:'LOG3 do diagnóstico foi Venn — manter forma' },
-    { id:'w7-d2', day:'Ter', date:'2/jun', iso:'2026-06-02', phase:'logica',
-      task:'Problemas verbais e raciocínio sequencial',
-      recursos:"Marcos Aba / Gis: 'Problemas verbais lógica'",
-      exercicios:'5 questões verbais',
-      milestone:'5 questões ≥80%',
-      obs:'Cuidado com pegadinhas. Ler 2x antes de marcar' },
-    { id:'w7-d3', day:'Qua', date:'3/jun', iso:'2026-06-03', phase:'redacao',
-      task:'Estudar tema da Redação #3 + repertório específico',
-      recursos:'Sites de notícias + banco de dossiê',
-      exercicios:'3-5 referências com dado/data/autor (nenhuma genérica)',
-      milestone:'Lista de repertório pronta — verificar: cada referência tem número ou lei citável?',
-      obs:'C3 gargalo histórico: repertório sem dado concreto não pontua' },
-    { id:'w7-d4', day:'Qui', date:'4/jun', iso:'2026-06-04', phase:'redacao',
-      task:'Esboço + escrita da Redação #3 (60 min cronometrados)',
-      recursos:'—',
-      exercicios:'Redação #3 manuscrita (25-30 linhas)',
+      exercicios:'Papel + cronômetro · 520-730 palavras',
       milestone:'Redação #3 escrita',
-      obs:'Checklist pré-escrita: (1) esboçar C5 com 5 elementos antes do cronômetro; (2) cada parágrafo tem função única?; (3) períodos longos? quebrar em 2 se >3 linhas; (4) proposta: órgão nomeado + sem prazo arbitrário' },
-    { id:'w7-d5', day:'Sex', date:'5/jun', iso:'2026-06-05', phase:'redacao',
-      task:'Foto + auto-análise + envio Redação #3 + revisão de lógica',
+      obs:'Cuidado anti-plágio IA: não decorar frases-modelo literais.' },
+    { id:'w6-d3', day:'Qua', date:'27/mai', iso:'2026-05-27', phase:'redacao',
+      task:'Auto-análise + envio Redação #3',
       recursos:'—',
-      exercicios:'Redação enviada + 10 questões mistas de lógica',
-      milestone:'Redação #3 enviada',
-      obs:'Na auto-análise: checar os 4 pontos do checklist antes de enviar' }
+      exercicios:'Foto + envio para correção',
+      milestone:'Correção em curso',
+      obs:'Comparar evolução com #2' },
+    { id:'w6-d4', day:'Qui', date:'28/mai', iso:'2026-05-28', phase:'logica',
+      task:'Manutenção FIAP: lógica — contrapositiva (1h, hedge)',
+      recursos:"Ferretto: 'Equivalências lógicas' (~15 min)",
+      exercicios:'5 questões de contrapositiva',
+      milestone:'Conceito fixado',
+      obs:'NÃO cai na FGV. Gargalo do diagnóstico FIAP.' },
+    { id:'w6-d5', day:'Sex', date:'29/mai', iso:'2026-05-29', phase:'logica',
+      task:'Manutenção FIAP: tabela-verdade + negações (1h, hedge)',
+      recursos:"Ferretto: tabela-verdade; De Morgan",
+      exercicios:'5 questões mistas',
+      milestone:'Manutenção concluída',
+      obs:'Hedge minimalista. Foco real está na redação.' }
   ]},
-  { week: 'W8', period: '8-14/jun', focus: 'Integração + simulado parcial', days: [
-    { id:'w8-d1', day:'Seg', date:'8/jun', iso:'2026-06-08', phase:'integracao',
-      task:'Simulado parcial: 9 objetivas em 60 min',
+  { week: 'W7', period: '1-7/jun', focus: 'Redação #4 + Check-in FGV', track:'both', days: [
+    { id:'w7-d1', day:'Seg', date:'1/jun', iso:'2026-06-01', phase:'redacao',
+      task:'Redação #4 — tema + repertório (consolidação C3+C5)',
+      recursos:'Banco pessoal de repertório',
+      exercicios:'Identificar 5 referências por tema (DSA, MCI, CF/88, Reuters, TSE)',
+      milestone:'Banco de repertório consolidado',
+      obs:'Repertório precisa ser PRONTO no dia da prova FGV. Decorar.' },
+    { id:'w7-d2', day:'Ter', date:'2/jun', iso:'2026-06-02', phase:'redacao',
+      task:'Redação #4 — escrita 2h cronometradas',
       recursos:'—',
-      exercicios:'Simulado parcial gerado por mim',
-      milestone:'Simulado concluído',
-      obs:'Mesmas regras: sem consulta, sem calculadora' },
-    { id:'w8-d2', day:'Ter', date:'9/jun', iso:'2026-06-09', phase:'integracao',
-      task:'Análise pós-simulado: padrões de erro',
+      exercicios:'Papel + cronômetro · 520-730 palavras',
+      milestone:'Redação #4 escrita',
+      obs:'Verificar tempo de cada fase: tese, 2 args, proposta. Quanto sobra?' },
+    { id:'w7-d3', day:'Qua', date:'3/jun', iso:'2026-06-03', phase:'redacao',
+      task:'Auto-análise + envio Redação #4',
       recursos:'—',
-      exercicios:'Análise documentada',
-      milestone:'2-3 ajustes documentados',
-      obs:'Comparar com diagnóstico W1' },
-    { id:'w8-d3', day:'Qua', date:'10/jun', iso:'2026-06-10', phase:'integracao',
-      task:'Interpretação de texto — anti-sobre-inferência',
+      exercicios:'Foco em consistência entre tese e proposta C5',
+      milestone:'Redação enviada',
+      obs:'C5 alvo > 170/200 nesta altura' },
+    { id:'w7-d4', day:'Qui', date:'4/jun', iso:'2026-06-04', phase:'logica',
+      task:'Manutenção FIAP: lógica — Venn + proposicional (1h, hedge)',
+      recursos:"Ferretto: diagramas de Venn",
+      exercicios:'5 questões',
+      milestone:'Manutenção concluída',
+      obs:'NÃO cai FGV. Hedge.' },
+    { id:'w7-d5', day:'Sex', date:'5/jun', iso:'2026-06-05', phase:'fgv',
+      task:'Prep para Check-in FGV (07/06 dom) — testar ambiente',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'Webcam 640x480+, mic ativo, internet 10/5 Mbps, Win10/11, sem fone, RG físico',
+      milestone:'Ambiente validado',
+      obs:'Check-in obrigatório dia 07/06. Não realizar = não fazer a prova.' }
+  ]},
+  { week: 'W8', period: '7-14/jun', focus: '★ SEMANA DA PROVA FGV', track:'fgv', days: [
+    { id:'w8-d1', day:'Dom', date:'7/jun', iso:'2026-06-07', phase:'fgv',
+      task:'CHECK-IN FGV — upload de documento (frente+verso) + biometria facial',
+      recursos:'Link no CCI (enviado por e-mail FGV)',
+      exercicios:'JPEG/PNG/PDF até 2MB · webcam habilitada',
+      milestone:'Check-in concluído',
+      obs:'OBRIGATÓRIO. Sem isso, prova negada.' },
+    { id:'w8-d2', day:'Seg', date:'8/jun', iso:'2026-06-08', phase:'redacao',
+      task:'Simulado de redação FGV #1 — 2h, ambiente proctoring real',
+      recursos:'—',
+      exercicios:'Câmera ligada, mic on, sem alternar aba, sem fone, 520-730 palavras',
+      milestone:'Simulado #1 concluído',
+      obs:'Replicar TODAS condições do edital FGV. É hoje que se aprende a calibrar a contagem de palavras.' },
+    { id:'w8-d3', day:'Ter', date:'9/jun', iso:'2026-06-09', phase:'redacao',
+      task:'Análise pós-simulado + ajustes finais',
+      recursos:'—',
+      exercicios:'Identificar 2 melhorias cirúrgicas para o dia da prova',
+      milestone:'Plano de ataque definido',
+      obs:'Foco em finalidade C5 e dados específicos C3.' },
+    { id:'w8-d4', day:'Qua', date:'10/jun', iso:'2026-06-10', phase:'redacao',
+      task:'Revisão dos 5 elementos C5 + 10 frases-modelo (reformuladas, não decoradas)',
+      recursos:'Caderno pessoal',
+      exercicios:'Escrever 10 propostas de intervenção em 30 min',
+      milestone:'Repertório de propostas pronto',
+      obs:'Anti-plágio IA: parafrasear, não copiar.' },
+    { id:'w8-d5', day:'Qui', date:'11/jun', iso:'2026-06-11', phase:'redacao',
+      task:'Simulado de redação FGV #2 — 2h cronometradas',
+      recursos:'—',
+      exercicios:'Tema atualidades · 520-730 palavras',
+      milestone:'Simulado #2 concluído',
+      obs:'Último ensaio antes da prova. Validar tempo.' },
+    { id:'w8-d6', day:'Sex', date:'12/jun', iso:'2026-06-12', phase:'fgv',
+      task:'Checklist técnico final + descanso ativo',
+      recursos:'—',
+      exercicios:'Win update, webcam, mic, internet, RG físico, ambiente isolado',
+      milestone:'Tudo testado',
+      obs:'Zero conteúdo novo. Sono regular.' },
+    { id:'w8-d7', day:'Sáb', date:'13/jun', iso:'2026-06-13', phase:'viagem',
+      task:'Repouso total — véspera da prova',
+      recursos:'—',
+      exercicios:'—',
+      milestone:'Descanso',
+      obs:'Dormir cedo. 8h de sono mínimo.' },
+    { id:'w8-d8', day:'Dom', date:'14/jun', iso:'2026-06-14', phase:'prova',
+      task:'★ PROVA FGV — 9h30 às 11h30 (acordar 7h, café, mesa pronta 9h)',
+      recursos:'Link na plataforma · RG físico',
+      exercicios:'Redação 520-730 palavras, dissertativo-argumentativo, proposta com 5 elementos',
+      milestone:'PROVA FGV EXECUTADA',
+      obs:'Não assinar. Não copiar motivadores. Mic on, câmera frontal a 60cm. Estar logado 9h00.' }
+  ]},
+  // ============================================================
+  // PÓS-PROVA FGV (W9): aguardando resultado em 22/06.
+  // ============================================================
+  { week: 'W9', period: '15-21/jun', focus: 'Aguardando resultado FGV', track:'both', days: [
+    { id:'w9-d1', day:'Seg', date:'15/jun', iso:'2026-06-15', phase:'integracao',
+      task:'Auto-análise pessoal da prova FGV (impressão, dúvidas, contagem estimada)',
+      recursos:'—',
+      exercicios:'Anotar 3 pontos da própria redação',
+      milestone:'Análise documentada',
+      obs:'Útil para calibrar próximas redações se cair no hedge FIAP.' },
+    { id:'w9-d2', day:'Ter', date:'16/jun', iso:'2026-06-16', phase:'matematica',
+      task:'Manutenção FIAP: matemática — questões mistas (foco hedge)',
+      recursos:"Marcos Aba; Equaciona",
+      exercicios:'10 questões mistas',
+      milestone:'10 questões ≥80%',
+      obs:'Hedge: caso resultado FGV em 22/06 seja negativo.' },
+    { id:'w9-d3', day:'Qua', date:'17/jun', iso:'2026-06-17', phase:'logica',
+      task:'Manutenção FIAP: lógica — questões mistas',
+      recursos:"Ferretto",
+      exercicios:'10 questões variadas',
+      milestone:'10 questões ≥80%',
+      obs:'Hedge ativo.' },
+    { id:'w9-d4', day:'Qui', date:'18/jun', iso:'2026-06-18', phase:'integracao',
+      task:'Interpretação de texto (foco FIAP)',
       recursos:'—',
       exercicios:'10 questões de interpretação',
       milestone:'10 questões ≥80%',
-      obs:'Alternativa CONSERVADORA vence a ELEGANTE' },
-    { id:'w8-d4', day:'Qui', date:'11/jun', iso:'2026-06-11', phase:'integracao',
-      task:'Revisão dos pontos frágeis do simulado parcial',
-      recursos:'Vídeos por tópico se necessário',
-      exercicios:'5-10 questões focadas nos gaps',
-      milestone:'Gaps revisados',
-      obs:'Foco cirúrgico, não revisão genérica' },
-    { id:'w8-d5', day:'Sex', date:'12/jun', iso:'2026-06-12', phase:'integracao',
-      task:'Manutenção de matemática + lógica',
+      obs:'Alternativa conservadora vence elegante.' },
+    { id:'w9-d5', day:'Sex', date:'19/jun', iso:'2026-06-19', phase:'redacao',
+      task:'Redação #5 — manutenção (foco FIAP: redação ENEM permite mais palavras)',
       recursos:'—',
-      exercicios:'10 questões mistas',
-      milestone:'10 questões ≥80%',
-      obs:'Preparar mente para Simulado #1' }
+      exercicios:'Redação 30 linhas manuscrita 60 min',
+      milestone:'Redação enviada',
+      obs:'FIAP: ENEM puro, sem limite estreito de palavras. Calibrar.' }
   ]},
-  { week: 'W9', period: '15-21/jun', focus: 'Simulado #1 (3h)', days: [
-    { id:'w9-d1', day:'Seg', date:'15/jun', iso:'2026-06-15', phase:'simulado',
-      task:'Preparar ambiente real para simulado completo',
-      recursos:'—',
-      exercicios:'Câmera, luz, papel, cronômetro testados',
-      milestone:'Ambiente pronto',
-      obs:'Simular condições reais da prova' },
-    { id:'w9-d2', day:'Ter', date:'16/jun', iso:'2026-06-16', phase:'simulado',
-      task:'SIMULADO #1 completo: 3h, 9 objetivas + Redação #3',
-      recursos:'—',
-      exercicios:'Simulado completo gerado por mim',
-      milestone:'Simulado sem pausa',
-      obs:'Sustentar 3h. Ponto de cansaço?' },
-    { id:'w9-d3', day:'Qua', date:'17/jun', iso:'2026-06-17', phase:'simulado',
-      task:'Análise de tempo, ordem, ponto de cansaço',
-      recursos:'—',
-      exercicios:'Análise comigo (chat)',
-      milestone:'Análise documentada',
-      obs:'Quanto tempo em cada bloco?' },
-    { id:'w9-d4', day:'Qui', date:'18/jun', iso:'2026-06-18', phase:'simulado',
-      task:'Correção da Redação #3: identificar 2 piores pontos',
-      recursos:'—',
-      exercicios:'Correção comigo',
-      milestone:'Plano de correção definido',
-      obs:'Foco em 2 competências por vez' },
-    { id:'w9-d5', day:'Sex', date:'19/jun', iso:'2026-06-19', phase:'simulado',
-      task:'Síntese da semana e ajustes para W10',
-      recursos:'—',
-      exercicios:'Lista de ajustes para próxima semana',
-      milestone:'Ajustes priorizados',
-      obs:'Não acumular gaps' }
-  ]},
-  { week: 'W10', period: '22-28/jun', focus: 'Calibração com base no Simulado #1', days: [
-    { id:'w10-d1', day:'Seg', date:'22/jun', iso:'2026-06-22', phase:'calibracao',
-      task:'Revisar tópico mais frágil do Simulado #1',
+  // ============================================================
+  // BIFURCAÇÃO (W10): resultado FGV em 22/06.
+  // Após marcar resultado no topo do app, semanas FIAP-only ficam
+  // visíveis (reprovado) ou atenuadas (aprovado).
+  // ============================================================
+  { week: 'W10', period: '22-28/jun', focus: '★ BIFURCAÇÃO — resultado FGV', track:'both', days: [
+    { id:'w10-d1', day:'Seg', date:'22/jun', iso:'2026-06-22', phase:'fgv',
+      task:'★ RESULTADO FGV (após 18h) — marcar bifurcação no app',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'Acessar Resultado e Matrícula Digital',
+      milestone:'Resultado registrado · botão FGV marcado no app',
+      obs:'Aprovado → iniciar matrícula digital até 13/07. Reprovado → ativar W10-d2 a W15 (FIAP).' },
+    { id:'w10-d2', day:'Ter', date:'23/jun', iso:'2026-06-23', phase:'matricula',
+      task:'SE APROVADO: iniciar upload de documentos FGV (matrícula digital)',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'RG, CPF, foto 3x4, certificado EM, 1ª parcela (boleto)',
+      milestone:'Upload iniciado',
+      obs:'Documentos PDF/JPG até 1,5MB cada. Frente+verso em arquivo único.' },
+    { id:'w10-d3', day:'Qua', date:'24/jun', iso:'2026-06-24', phase:'calibracao',
+      task:'SE REPROVADO: revisar tópico mais frágil (mat ou lógica) com base no diagnóstico',
       recursos:'Vídeo específico do tópico',
       exercicios:'10 questões focadas',
       milestone:'Tópico revisado',
-      obs:'Não estudar o que já domina' },
-    { id:'w10-d2', day:'Ter', date:'23/jun', iso:'2026-06-23', phase:'calibracao',
-      task:'Revisar segundo tópico mais frágil',
-      recursos:'Vídeo específico',
+      obs:'Foco cirúrgico nos erros do diagnóstico FIAP.' },
+    { id:'w10-d4', day:'Qui', date:'25/jun', iso:'2026-06-25', phase:'calibracao',
+      task:'SE REPROVADO: revisar segundo tópico frágil',
+      recursos:'—',
       exercicios:'10 questões focadas',
       milestone:'Tópico revisado',
-      obs:'Foco cirúrgico nos erros' },
-    { id:'w10-d3', day:'Qua', date:'24/jun', iso:'2026-06-24', phase:'calibracao',
-      task:'Cálculo mental — 30 min',
-      recursos:'App: Mental Math Master',
-      exercicios:'Prática de cálculo mental',
-      milestone:'Cálculo mental fluido',
-      obs:'Sem calculadora na prova: cálculo mental é músculo' },
-    { id:'w10-d4', day:'Qui', date:'25/jun', iso:'2026-06-25', phase:'calibracao',
-      task:'Manutenção de lógica',
-      recursos:'—',
-      exercicios:'10 questões variadas de lógica',
-      milestone:'10 questões ≥80%',
-      obs:'Não deixar lógica esfriar' },
+      obs:'—' },
     { id:'w10-d5', day:'Sex', date:'26/jun', iso:'2026-06-26', phase:'calibracao',
-      task:'Preparar para Simulado #2',
-      recursos:'—',
-      exercicios:'Revisão de checklist logístico',
-      milestone:'Pronto p/ Simulado #2',
-      obs:'Ambiente pronto' }
+      task:'Cálculo mental + preparação Simulado #2 FIAP (se reprovado)',
+      recursos:'App: Mental Math Master',
+      exercicios:'30 min cálculo mental',
+      milestone:'Mente afiada',
+      obs:'Sem calculadora na prova FIAP.' }
   ]},
-  { week: 'W11', period: '29/jun-5/jul', focus: 'Simulado #2 + INSCRIÇÃO FIAP', days: [
-    { id:'w11-d1', day:'Seg', date:'29/jun', iso:'2026-06-29', phase:'simulado',
-      task:'INSCRIÇÃO FIAP — abrir sistema e começar',
+  { week: 'W11', period: '29/jun-5/jul', focus: 'Inscrição FIAP + Simulado #2', track:'fiap', days: [
+    { id:'w11-d1', day:'Seg', date:'29/jun', iso:'2026-06-29', phase:'inscricao',
+      task:'INSCRIÇÃO FIAP — abrir sistema',
       recursos:'fiap.com.br/graduacao/vestibular',
       exercicios:'Cadastro feito',
       milestone:'Inscrição iniciada',
-      obs:'Não deixar para julho. CRÍTICO.' },
-    { id:'w11-d2', day:'Ter', date:'30/jun', iso:'2026-06-30', phase:'simulado',
+      obs:'Pular esta semana se aprovado FGV.' },
+    { id:'w11-d2', day:'Ter', date:'30/jun', iso:'2026-06-30', phase:'inscricao',
       task:'INSCRIÇÃO FIAP — concluir e pagar (DEADLINE 30/06)',
       recursos:'fiap.com.br + comprovante',
-      exercicios:'Inscrição confirmada',
+      exercicios:'Inscrição confirmada · R$90',
       milestone:'Inscrição CONFIRMADA',
-      obs:'Imprimir comprovante e guardar' },
+      obs:'CRÍTICO se hedge. Imprimir comprovante.' },
     { id:'w11-d3', day:'Qua', date:'1/jul', iso:'2026-07-01', phase:'simulado',
-      task:'SIMULADO #2 completo: 3h, com redação',
+      task:'SIMULADO #2 FIAP completo: 3h, com redação ENEM',
       recursos:'—',
       exercicios:'Simulado completo',
       milestone:'Simulado #2 concluído',
-      obs:'Testar nova ordem de resolução' },
+      obs:'Testar ordem de resolução.' },
     { id:'w11-d4', day:'Qui', date:'2/jul', iso:'2026-07-02', phase:'simulado',
-      task:'Análise: comparar com Simulado #1',
+      task:'Análise: comparar com Simulado #1 (W9 d5)',
       recursos:'—',
       exercicios:'Análise comparativa',
       milestone:'Análise documentada',
       obs:'Onde melhorou? Onde regrediu?' },
     { id:'w11-d5', day:'Sex', date:'3/jul', iso:'2026-07-03', phase:'simulado',
-      task:'Decidir ordem de resolução final para a prova',
+      task:'Definir ordem de resolução final para a prova FIAP',
       recursos:'—',
       exercicios:'Estratégia de prova definida',
       milestone:'Estratégia documentada',
-      obs:'Decisão informada por dados' }
+      obs:'Decisão informada por dados.' }
   ]},
-  { week: 'W12', period: '6-12/jul', focus: 'Calibração + Redação #4', days: [
-    { id:'w12-d1', day:'Seg', date:'6/jul', iso:'2026-07-06', phase:'calibracao',
-      task:'Revisar gap principal do Simulado #2',
-      recursos:'Vídeo específico',
-      exercicios:'10 questões focadas',
-      milestone:'Tópico revisado',
-      obs:'Foco cirúrgico no erro principal' },
+  { week: 'W12', period: '6-13/jul', focus: 'Matrícula FGV (se aprovado) / Redação #6 FIAP', track:'both', days: [
+    { id:'w12-d1', day:'Seg', date:'6/jul', iso:'2026-07-06', phase:'matricula',
+      task:'SE APROVADO FGV: revisar uploads, retificar pendências',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'Verificar status de cada documento',
+      milestone:'Tudo deferido',
+      obs:'Upload deadline 13/07. Não deixar para sexta.' },
     { id:'w12-d2', day:'Ter', date:'7/jul', iso:'2026-07-07', phase:'redacao',
-      task:'Esboço + escrita da Redação #4 (60 min)',
+      task:'SE REPROVADO: Redação #6 FIAP (60 min, formato ENEM)',
       recursos:'—',
-      exercicios:'Redação #4 manuscrita',
-      milestone:'C5 ≥170; C3 com 2+ referências datadas',
-      obs:'Checklist obrigatório: (1) parágrafo único por função; (2) nenhum período >3 linhas; (3) repertório com dado concreto — zero Confúcio/genérico; (4) proposta: órgão nomeado, ação ativa, sem prazo arbitrário' },
-      milestone:'Redação #4 escrita',
-      obs:'Última redação antes do ensaio geral' },
+      exercicios:'Redação manuscrita 25-30 linhas',
+      milestone:'Redação #6 escrita',
+      obs:'Última redação antes do ensaio geral FIAP.' },
     { id:'w12-d3', day:'Qua', date:'8/jul', iso:'2026-07-08', phase:'calibracao',
-      task:'Manutenção de matemática',
+      task:'SE REPROVADO: manutenção matemática (10 questões variadas)',
       recursos:'—',
       exercicios:'10 questões variadas',
       milestone:'10 questões ≥80%',
-      obs:'Não deixar esfriar' },
+      obs:'Não deixar esfriar.' },
     { id:'w12-d4', day:'Qui', date:'9/jul', iso:'2026-07-09', phase:'calibracao',
-      task:'Manutenção de lógica',
+      task:'SE REPROVADO: manutenção lógica',
       recursos:'—',
       exercicios:'10 questões variadas',
       milestone:'10 questões ≥80%',
-      obs:'Não deixar esfriar' },
+      obs:'Não deixar esfriar.' },
     { id:'w12-d5', day:'Sex', date:'10/jul', iso:'2026-07-10', phase:'redacao',
-      task:'Foto + envio Redação #4 + revisão',
+      task:'SE REPROVADO: envio Redação #6 + revisão',
       recursos:'—',
       exercicios:'Envio para correção',
       milestone:'Correção enviada',
-      obs:'Preparação final para o ensaio' }
+      obs:'—' },
+    { id:'w12-d6', day:'Seg', date:'13/jul', iso:'2026-07-13', phase:'matricula',
+      task:'★ DEADLINE upload de documentos FGV (se aprovado)',
+      recursos:'graduacao-online.fgv.br',
+      exercicios:'Todos documentos deferidos · 1ª parcela paga',
+      milestone:'Upload concluído',
+      obs:'Após esta data, retificações não são aceitas.' }
   ]},
-  { week: 'W13', period: '13-19/jul', focus: 'Simulado #3 (Ensaio Geral)', days: [
-    { id:'w13-d1', day:'Seg', date:'13/jul', iso:'2026-07-13', phase:'simulado',
-      task:'Preparar ambiente: ensaio geral + checklist logístico',
-      recursos:'—',
-      exercicios:'Ambiente final preparado',
-      milestone:'Tudo testado',
-      obs:'Mesma posição da prova real' },
-    { id:'w13-d2', day:'Ter', date:'14/jul', iso:'2026-07-14', phase:'simulado',
-      task:'SIMULADO #3 completo (Ensaio Geral)',
+  { week: 'W13', period: '14-19/jul', focus: 'Assinatura FGV / Simulado #3 FIAP', track:'both', days: [
+    { id:'w13-d1', day:'Ter', date:'14/jul', iso:'2026-07-14', phase:'simulado',
+      task:'SE REPROVADO: SIMULADO #3 FIAP completo (Ensaio Geral)',
       recursos:'—',
       exercicios:'Simulado completo + 3h de foco',
       milestone:'Simulado #3 concluído',
-      obs:'Aplicar estratégia final' },
-    { id:'w13-d3', day:'Qua', date:'15/jul', iso:'2026-07-15', phase:'simulado',
-      task:'Análise de tempo e estratégia de prova',
+      obs:'Aplicar estratégia final.' },
+    { id:'w13-d2', day:'Qua', date:'15/jul', iso:'2026-07-15', phase:'matricula',
+      task:'★ ASSINATURA DIGITAL FGV (se aprovado) — contrato, ficha, termos',
+      recursos:'E-mail FGV (verificar SPAM)',
+      exercicios:'Assinar todos os documentos cadastrais',
+      milestone:'Assinatura concluída',
+      obs:'Prazo não negociável. Não assinar = desistência automática.' },
+    { id:'w13-d3', day:'Qui', date:'16/jul', iso:'2026-07-16', phase:'simulado',
+      task:'SE REPROVADO: análise do Simulado #3 + kit dia da prova',
       recursos:'—',
-      exercicios:'Análise comigo (chat)',
-      milestone:'Estratégia fechada',
-      obs:'Como foi o desgaste pré-viagem?' },
-    { id:'w13-d4', day:'Qui', date:'16/jul', iso:'2026-07-16', phase:'simulado',
-      task:'Definir kit dia da prova (físico e digital)',
-      recursos:'—',
-      exercicios:'Kit preparado (docs, material)',
-      milestone:'Kit pronto e guardado',
-      obs:'Blindado logisticamente antes das férias' },
-    { id:'w13-d5', day:'Sex', date:'17/jul', iso:'2026-07-17', phase:'simulado',
-      task:'Análise da Redação #4 e últimos ajustes',
+      exercicios:'Análise + kit logístico',
+      milestone:'Kit pronto',
+      obs:'Blindado antes da viagem.' },
+    { id:'w13-d4', day:'Sex', date:'17/jul', iso:'2026-07-17', phase:'simulado',
+      task:'SE REPROVADO: últimos ajustes na Redação #6',
       recursos:'—',
       exercicios:'Correção comigo',
       milestone:'Ajustes finais',
-      obs:'Último esforço denso' }
+      obs:'—' },
+    { id:'w13-d5', day:'Sáb', date:'18/jul', iso:'2026-07-18', phase:'viagem',
+      task:'Embarque para Cusco (após assinatura FGV e/ou Simulado #3)',
+      recursos:'—',
+      exercicios:'—',
+      milestone:'Viagem iniciada',
+      obs:'Datas Cusco confirmadas sem conflito com matrícula FGV.' }
   ]},
-  { week: 'W14', period: '20-26/jul', focus: 'Viagem (manutenção ativa)', days: [
+  { week: 'W14', period: '20-26/jul', focus: 'Viagem (manutenção ativa)', track:'both', days: [
     { id:'w14-d1', day:'Seg-Sex', date:'20-24/jul', iso:'2026-07-24', phase:'viagem',
-      task:'Férias: manutenção ativa de baixa fricção (1h/dia)',
+      task:'Férias: manutenção ativa de baixa fricção (1h/dia se reprovado FGV)',
       recursos:'Sites de notícias',
       exercicios:'Leitura atualidades + 5 questões RL diárias',
-      milestone:'Manutenção diária (1h)',
+      milestone:'Manutenção diária',
       obs:'Respeitar prioridade Família.' },
     { id:'w14-d2', day:'Sáb-Dom', date:'25-26/jul', iso:'2026-07-26', phase:'viagem',
       task:'Descanso total',
       recursos:'—',
       exercicios:'—',
       milestone:'Descanso ativo',
-      obs:'Família e lazer' }
+      obs:'Família e lazer.' }
   ]},
-  { week: 'W15', period: '27/jul-1/ago', focus: 'PROVA', days: [
-    { id:'w15-d1', day:'Seg-Qui', date:'27-30/jul', iso:'2026-07-30', phase:'viagem',
-      task:'Férias: revisão mental leve',
+  { week: 'W15', period: '27/jul-1/ago', focus: 'Início aulas FGV / PROVA FIAP', track:'both', days: [
+    { id:'w15-d1', day:'Seg', date:'27/jul', iso:'2026-07-27', phase:'matricula',
+      task:'★ DEADLINE cancelamento matrícula FGV (retenção 10% se cancelar)',
+      recursos:'fgvsrafinanceiro.online@fgv.br',
+      exercicios:'—',
+      milestone:'Decisão consolidada',
+      obs:'Última janela para cancelar sem perder além da 1ª parcela inteira.' },
+    { id:'w15-d2', day:'Ter', date:'28/jul', iso:'2026-07-28', phase:'fgv',
+      task:'★ INÍCIO DAS AULAS FGV (se aprovado)',
+      recursos:'aluno.fgv.br',
+      exercicios:'Acessar AVA, primeira aula',
+      milestone:'Aluno ativo na FGV',
+      obs:'Início do trimestre letivo 3T/2026.' },
+    { id:'w15-d3', day:'Qua-Qui', date:'29-30/jul', iso:'2026-07-30', phase:'viagem',
+      task:'SE REPROVADO: revisão mental leve (1h/dia)',
       recursos:'Resumos pessoais',
-      exercicios:'Leitura (1h/dia)',
+      exercicios:'Leitura passiva',
       milestone:'Confiança consolidada',
       obs:'Nada novo. Só repetição.' },
-    { id:'w15-d2', day:'Sex', date:'31/jul', iso:'2026-07-31', phase:'prova',
-      task:'Voo de retorno para o Rio de Janeiro',
+    { id:'w15-d4', day:'Sex', date:'31/jul', iso:'2026-07-31', phase:'prova',
+      task:'SE REPROVADO: véspera FIAP — checklist técnico, descanso',
       recursos:'—',
-      exercicios:'Checklist emergencial',
-      milestone:'Retorno concluído',
-      obs:'Aceite do risco. Desligar às 18h.' },
-    { id:'w15-d3', day:'Sáb', date:'1/ago', iso:'2026-08-01', phase:'prova',
-      task:'PROVA FIAP — 10h-13h (acordar 7h, café, revisão leve 8h-9h)',
-      recursos:'Resumos + ambiente pronto',
+      exercicios:'Câmera, mic, RG, ambiente',
+      milestone:'Tudo testado',
+      obs:'Desligar 18h. Dormir cedo.' },
+    { id:'w15-d5', day:'Sáb', date:'1/ago', iso:'2026-08-01', phase:'prova',
+      task:'★ PROVA FIAP — 10h-13h Teams (acordar 7h, café, revisão leve 8h-9h)',
+      recursos:'fiap.com.br',
       exercicios:'PROVA FIAP EXECUTADA',
       milestone:'PROVA CONCLUÍDA',
       obs:'6+ min por questão. Sem pressa.' }
@@ -1146,11 +1345,11 @@ const DATA = [
 let state = {
   done: {},
   notes: {},
-  theme: 'light'
+  theme: 'light',
+  fgvStatus: 'pending' // 'pending' | 'approved' | 'rejected'
 };
 let currentFilter = 'all';
 
-// Inicializa state com defaults
 DATA.forEach(w => w.days.forEach(d => {
   if (d.defaultDone) state.done[d.id] = true;
 }));
@@ -1172,7 +1371,7 @@ async function loadState() {
       }
     }
   } catch (e) {
-    // chave não existe ou storage indisponível — segue com defaults
+    // ignora
   }
 }
 
@@ -1192,26 +1391,136 @@ async function saveState() {
 // ========== UTILS ==========
 function todayISO() {
   const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
 function daysBetween(a, b) {
   const ms = 1000 * 60 * 60 * 24;
   const da = new Date(a); da.setHours(0,0,0,0);
   const db = new Date(b); db.setHours(0,0,0,0);
   return Math.round((db - da) / ms);
 }
-
 function formatTodayLabel() {
   const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
   const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const d = new Date();
   return `${dias[d.getDay()]} · ${d.getDate()}.${meses[d.getMonth()]}`;
 }
+function formatDateShort(date) {
+  const dias = ['dom','seg','ter','qua','qui','sex','sáb'];
+  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  return `${dias[date.getDay()]} ${date.getDate()}.${meses[date.getMonth()]}`;
+}
 
+// ========== LÓGICA DE COUNTDOWN CONDICIONAL ==========
+function getCountdownTarget() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const fgvProva = DATES.fgvProva;
+  const fgvResultado = DATES.fgvResultado;
+  const fiapProva = DATES.fiapProva;
+
+  // 1. Antes da prova FGV
+  if (today < fgvProva) {
+    return {
+      date: fgvProva,
+      label: 'até PROVA FGV',
+      tag: 'FGV',
+      tagClass: '',
+      info: 'Caminho primário · prova de redação 9h30–11h30'
+    };
+  }
+  // 2. Dia da prova FGV
+  if (today.getTime() === fgvProva.getTime()) {
+    return {
+      date: fgvProva,
+      label: '★ PROVA FGV HOJE',
+      tag: 'FGV',
+      tagClass: '',
+      info: 'Boa prova. 9h30–11h30.',
+      isToday: true
+    };
+  }
+  // 3. Entre prova e resultado (FGV pendente)
+  if (today > fgvProva && today < fgvResultado) {
+    return {
+      date: fgvResultado,
+      label: 'até RESULTADO FGV',
+      tag: 'AGUARDANDO',
+      tagClass: 'aguardando',
+      info: 'Manutenção ativa para hedge FIAP'
+    };
+  }
+  // 4. A partir de 22/06 — depende do status marcado
+  if (state.fgvStatus === 'approved') {
+    if (today < DATES.fgvMatriculaFim) {
+      return {
+        date: DATES.fgvMatriculaFim,
+        label: 'até DEADLINE upload docs FGV',
+        tag: 'MATRÍCULA',
+        tagClass: 'matricula',
+        info: 'Matrícula digital em curso · upload até 13/07'
+      };
+    }
+    if (today < DATES.fgvAssinatura) {
+      return {
+        date: DATES.fgvAssinatura,
+        label: 'até ASSINATURA digital FGV',
+        tag: 'MATRÍCULA',
+        tagClass: 'matricula',
+        info: 'Assinatura por e-mail (verificar SPAM)'
+      };
+    }
+    if (today < DATES.fgvAulas) {
+      return {
+        date: DATES.fgvAulas,
+        label: 'até INÍCIO DAS AULAS FGV',
+        tag: 'FGV',
+        tagClass: '',
+        info: 'Trimestre 3T/2026'
+      };
+    }
+    return {
+      date: DATES.fgvAulas,
+      label: 'AULAS FGV em curso',
+      tag: 'FGV',
+      tagClass: '',
+      info: 'Aluno ativo'
+    };
+  }
+  if (state.fgvStatus === 'rejected') {
+    if (today < fiapProva) {
+      return {
+        date: fiapProva,
+        label: 'até PROVA FIAP',
+        tag: 'FIAP',
+        tagClass: 'fiap',
+        info: 'Hedge ativado · prova ENEM-style 10h–13h Teams'
+      };
+    }
+    return {
+      date: fiapProva,
+      label: 'PROVA FIAP concluída',
+      tag: 'FIAP',
+      tagClass: 'fiap',
+      info: '—'
+    };
+  }
+  // 5. Após 22/06, status ainda pendente
+  return {
+    date: fgvResultado,
+    label: 'RESULTADO FGV disponível',
+    tag: 'PENDENTE',
+    tagClass: 'aguardando',
+    info: 'Marcar resultado no app para liberar próximas semanas'
+  };
+}
+
+function shouldShowBifurcation() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  // Mostrar a partir do dia do resultado (22/06)
+  return today >= DATES.fgvResultado;
+}
+
+// ========== DATA helpers ==========
 function findTodayDay() {
   const today = todayISO();
   for (const w of DATA) {
@@ -1219,7 +1528,6 @@ function findTodayDay() {
       if (d.iso === today) return { week: w, day: d };
     }
   }
-  // se hoje não tem tarefa, busca a próxima futura
   for (const w of DATA) {
     for (const d of w.days) {
       if (d.iso >= today) return { week: w, day: d, isFuture: true };
@@ -1242,20 +1550,64 @@ function findCurrentWeek() {
   return candidate || DATA[DATA.length - 1];
 }
 
+function isWeekDimmed(w) {
+  // Semanas FIAP-only ficam atenuadas se FGV aprovada
+  if (state.fgvStatus === 'approved' && w.track === 'fiap') return true;
+  // Semanas FGV-only ficam atenuadas após reprovação
+  if (state.fgvStatus === 'rejected' && w.track === 'fgv') return true;
+  return false;
+}
+
 // ========== RENDER ==========
 function renderCountdown() {
+  const target = getCountdownTarget();
   const today = new Date();
-  const days = daysBetween(today, EXAM_DATE);
+  const days = daysBetween(today, target.date);
   document.getElementById('countdownNum').textContent = days >= 0 ? days : 0;
+  document.getElementById('countdownTarget').textContent = formatDateShort(target.date);
+  document.getElementById('countdownLabel').firstChild.textContent =
+    target.isToday ? 'hoje · ' : 'dias restantes ';
+  // path banner
+  const tag = document.getElementById('pathTag');
+  tag.textContent = target.tag;
+  tag.className = 'path-tag' + (target.tagClass ? ' ' + target.tagClass : '');
+  document.getElementById('pathInfo').textContent = target.label.replace(/^até /, '') + ' — ' + target.info;
   document.getElementById('todayDate').textContent = formatTodayLabel();
+}
+
+function renderBifurcation() {
+  const bif = document.getElementById('bifurcation');
+  if (!shouldShowBifurcation()) {
+    bif.hidden = true;
+    return;
+  }
+  bif.hidden = false;
+  const status = document.getElementById('bifStatus');
+  const actions = document.getElementById('bifActions');
+  if (state.fgvStatus === 'approved') {
+    actions.style.display = 'none';
+    status.innerHTML = '<strong>FGV: aprovado.</strong> Caminho FIAP atenuado. <button class="bif-btn reset" id="bifReset" style="margin-left:8px;">refazer escolha</button>';
+  } else if (state.fgvStatus === 'rejected') {
+    actions.style.display = 'none';
+    status.innerHTML = '<strong>FGV: reprovado.</strong> Hedge FIAP ativo até 01/08. <button class="bif-btn reset" id="bifReset" style="margin-left:8px;">refazer escolha</button>';
+  } else {
+    actions.style.display = 'flex';
+    status.textContent = '';
+  }
+  // re-bind reset (criado dinamicamente)
+  const resetBtn = document.getElementById('bifReset');
+  if (resetBtn) resetBtn.addEventListener('click', () => setFgvStatus('pending'));
 }
 
 function renderProgress() {
   let total = 0, done = 0;
-  DATA.forEach(w => w.days.forEach(d => {
-    total++;
-    if (state.done[d.id]) done++;
-  }));
+  DATA.forEach(w => {
+    if (isWeekDimmed(w)) return; // não conta semanas atenuadas
+    w.days.forEach(d => {
+      total++;
+      if (state.done[d.id]) done++;
+    });
+  });
   const pct = total ? Math.round((done / total) * 100) : 0;
   document.getElementById('progressDone').textContent = done;
   document.getElementById('progressTotal').textContent = total;
@@ -1308,13 +1660,17 @@ function renderWeeks() {
     const isComplete = done === total;
     const isCurrent = w.week === currentWeek.week;
     const shouldOpen = isCurrent || (currentFilter !== 'all' && visibleDays.length > 0);
+    const dimmed = isWeekDimmed(w);
+    const trackTag = w.track === 'fgv' ? '<span class="week-tag fgv">FGV</span>'
+                   : w.track === 'fiap' ? '<span class="week-tag fiap">FIAP</span>'
+                   : '<span class="week-tag both">FGV+FIAP</span>';
 
     html += `
-      <div class="week ${isCurrent ? 'is-current' : ''} ${shouldOpen ? 'is-open' : ''}" data-week="${w.week}">
+      <div class="week ${isCurrent ? 'is-current' : ''} ${shouldOpen ? 'is-open' : ''} ${dimmed ? 'is-dimmed' : ''}" data-week="${w.week}">
         <div class="week-header" onclick="toggleWeek('${w.week}')">
           <div class="week-id">${w.week}</div>
           <div class="week-info">
-            <div class="week-focus">${w.focus}</div>
+            <div class="week-focus">${trackTag}${w.focus}</div>
             <div class="week-period">${w.period}</div>
           </div>
           <div class="week-progress">
@@ -1398,14 +1754,12 @@ async function toggleDone(id) {
   state.done[id] = !state.done[id];
   await saveState();
   renderProgress();
-  // re-render apenas a semana e o card de hoje
   const dayEl = document.querySelector(`[data-id="${id}"]`);
   if (dayEl) {
     dayEl.classList.toggle('is-done', !!state.done[id]);
     const check = dayEl.querySelector('.check');
     check.classList.toggle('is-checked', !!state.done[id]);
   }
-  // atualizar contador da semana
   const weekEl = dayEl?.closest('.week');
   if (weekEl) {
     const weekId = weekEl.dataset.week;
@@ -1436,7 +1790,6 @@ async function saveNote(id, value) {
   } else {
     delete state.notes[id];
   }
-  // atualizar preview de links em tempo real
   const linksEl = document.getElementById(`links-${id}`);
   if (linksEl) linksEl.innerHTML = renderNoteLinks(value);
   await saveState();
@@ -1447,7 +1800,6 @@ function renderNoteLinks(text) {
   const re = /(https?:\/\/[^\s<>"']+)/g;
   const raw = text.match(re);
   if (!raw) return '';
-  // Remove pontuação final comum e deduplica
   const urls = [...new Set(raw.map(u => u.replace(/[.,;:!?)\]]+$/, '')))];
   return urls.map(u => {
     const safe = escapeHtml(u);
@@ -1468,6 +1820,15 @@ function setFilter(filter) {
   renderWeeks();
 }
 
+async function setFgvStatus(status) {
+  state.fgvStatus = status;
+  await saveState();
+  renderCountdown();
+  renderBifurcation();
+  renderProgress();
+  renderWeeks();
+}
+
 async function toggleTheme() {
   state.theme = state.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme = state.theme;
@@ -1483,16 +1844,18 @@ function updateThemeIcon() {
 }
 
 async function resetAll() {
-  if (!confirm('Apagar todas as marcações e notas? Esta ação não pode ser desfeita.')) return;
+  if (!confirm('Apagar todas as marcações, notas e status FGV? Esta ação não pode ser desfeita.')) return;
   state.done = {};
   state.notes = {};
-  // restaurar defaults concluídos
+  state.fgvStatus = 'pending';
   DATA.forEach(w => w.days.forEach(d => {
     if (d.defaultDone) state.done[d.id] = true;
   }));
   await saveState();
   renderProgress();
   renderWeeks();
+  renderBifurcation();
+  renderCountdown();
 }
 
 // ========== INIT ==========
@@ -1501,22 +1864,29 @@ async function init() {
   document.documentElement.dataset.theme = state.theme;
   updateThemeIcon();
   renderCountdown();
+  renderBifurcation();
   renderProgress();
   renderToday();
   renderWeeks();
 
-  // event listeners
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => setFilter(btn.dataset.filter));
   });
   document.getElementById('themeBtn').addEventListener('click', toggleTheme);
   document.getElementById('resetBtn').addEventListener('click', resetAll);
+  document.getElementById('bifApprove').addEventListener('click', () => setFgvStatus('approved'));
+  document.getElementById('bifReject').addEventListener('click', () => setFgvStatus('rejected'));
 
-  // atualizar countdown a cada minuto (caso fique aberto)
   setInterval(renderCountdown, 60 * 1000);
 }
 
 init();
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>
